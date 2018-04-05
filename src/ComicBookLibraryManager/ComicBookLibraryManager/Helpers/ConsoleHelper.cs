@@ -18,7 +18,7 @@ namespace ComicBookLibraryManager.Helpers
         {
             Console.WriteLine();
             Console.Write(prompt);
-            string input = Console.ReadLine();
+            string input = Console.ReadLine() ?? ConsoleHelper.ReadInput(prompt, forceToLowercase);
             return forceToLowercase ? input.ToLower() : input;
         }
 

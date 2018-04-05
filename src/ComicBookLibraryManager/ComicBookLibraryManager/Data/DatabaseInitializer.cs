@@ -20,6 +20,12 @@ namespace ComicBookLibraryManager.Data
                 Title = "The Amazing Spider-Man",
                 Description = "The Amazing Spider-Man (abbreviated as ASM) is an American comic book series published by Marvel Comics, featuring the adventures of the fictional superhero Spider-Man. Being the mainstream continuity of the franchise, it began publication in 1963 as a monthly periodical and was published continuously, with a brief interruption in 1995, until its relaunch with a new numbering order in 1999. In 2003 the series reverted to the numbering order of the first volume. The title has occasionally been published biweekly, and was published three times a month from 2008 to 2010. A film named after the comic was released July 3, 2012."
             };
+            var seriesTest = new Series()
+            {
+
+                Title = "Spider-Man",
+                Description = "The Amazing Spider-Man (abbreviated as ASM) is an American comic book series published by Marvel Comics, featuring the adventures of the fictional superhero Spider-Man. Being the mainstream continuity of the franchise, it began publication in 1963 as a monthly periodical and was published continuously, with a brief interruption in 1995, until its relaunch with a new numbering order in 1999. In 2003 the series reverted to the numbering order of the first volume. The title has occasionally been published biweekly"
+            };
             var seriesIronMan = new Series()
             {
                 Title = "The Invincible Iron Man",
@@ -79,7 +85,7 @@ namespace ComicBookLibraryManager.Data
 
             var comicBook2 = new ComicBook()
             {
-                Series = seriesSpiderMan,
+                Series = seriesTest,
                 IssueNumber = 2,
                 Description = "The Vulture becomes the city's most feared thief. Spider-Man must find a way to figure out his secrets and defeat this winged menace. / Spider-Man is up against The Tinkerer and a race of aliens who are trying to invade Earth.",
                 PublishedOn = new DateTime(1963, 5, 1),
@@ -172,6 +178,7 @@ namespace ComicBookLibraryManager.Data
             comicBook9.AddArtist(artistJeffSmith, roleScript);
             comicBook9.AddArtist(artistJeffSmith, rolePencils);
             context.ComicBooks.Add(comicBook9);
+            context.Series.Add(seriesTest);
 
             context.SaveChanges();
         }
