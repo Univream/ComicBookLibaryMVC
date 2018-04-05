@@ -133,18 +133,32 @@ namespace ComicBookLibraryManager.Data
         /// <param name="comicBook">The ComicBook entity instance to add.</param>
         public static void AddComicBook(ComicBook comicBook)
         {
+<<<<<<< HEAD
             using (Context context = GetContext()) 
             {
                 context.ComicBooks.Add(comicBook);
 
                 if(comicBook.Series != null && comicBook.Series.Id > 0)
+=======
+            using (Context context = GetContext())
+            {
+                context.ComicBooks.Add(comicBook);
+
+                if (comicBook.Series != null && comicBook.Series.Id > 0)
+>>>>>>> 0508e19453a8e38fb0857ccf873419455a6f2316
                 {
                     context.Entry(comicBook.Series).State = EntityState.Unchanged;
                 }
 
+<<<<<<< HEAD
                 foreach (var artist in comicBook.Artists)
                 {
                     if (artist.Artist != null && artist.Id > 0)
+=======
+                foreach (ComicBookArtist artist in comicBook.Artists)
+                {
+                    if (artist.Artist != null && artist.Artist.Id > 0)
+>>>>>>> 0508e19453a8e38fb0857ccf873419455a6f2316
                     {
                         context.Entry(artist.Artist).State = EntityState.Unchanged;
                     }
@@ -154,7 +168,11 @@ namespace ComicBookLibraryManager.Data
                         context.Entry(artist.Role).State = EntityState.Unchanged;
                     }
                 }
+<<<<<<< HEAD
       
+=======
+
+>>>>>>> 0508e19453a8e38fb0857ccf873419455a6f2316
                 context.SaveChanges();
             }
         }
@@ -167,7 +185,14 @@ namespace ComicBookLibraryManager.Data
         {
             using (Context context = GetContext())
             {
+<<<<<<< HEAD
                 context.Entry(comicBook).State = EntityState.Modified;
+=======
+                context.ComicBooks.Attach(comicBook);
+                var comicBookEntry = context.Entry(comicBook);
+                comicBookEntry.State = EntityState.Modified;
+                //comicBookEntry.Property("IssueNumber").IsModified = false;
+>>>>>>> 0508e19453a8e38fb0857ccf873419455a6f2316
 
                 context.SaveChanges();
             }
@@ -179,10 +204,17 @@ namespace ComicBookLibraryManager.Data
         /// <param name="comicBookId">The comic book ID to delete.</param>
         public static void DeleteComicBook(int comicBookId)
         {
+<<<<<<< HEAD
             using (var context = GetContext())
             {
                 ComicBook comicbook = context.ComicBooks.Find(comicBookId);
                 context.Entry(comicbook).State = EntityState.Deleted;
+=======
+            using (Context context = GetContext())
+            {
+                var comicBook = new ComicBook() { Id = comicBookId };
+                context.Entry(comicBook).State = EntityState.Deleted;
+>>>>>>> 0508e19453a8e38fb0857ccf873419455a6f2316
 
                 context.SaveChanges();
             }
