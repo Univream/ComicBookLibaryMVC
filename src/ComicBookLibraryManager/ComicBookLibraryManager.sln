@@ -1,9 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.27130.2020
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComicBookLibraryManager", "ComicBookLibraryManager\ComicBookLibraryManager.csproj", "{D30BE089-4B9E-4532-ABE8-5F33EF03C585}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComicBookShared", "ComicBookShared\ComicBookShared.csproj", "{4CDC0BE6-2D76-4B41-BB0C-9FF4FFB720B3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComicBookLibaryWebApp", "ComicBookLibaryWebApp\ComicBookLibaryWebApp.csproj", "{50B86DD1-470A-4BEE-84E7-3A4985D693F8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,8 +19,19 @@ Global
 		{D30BE089-4B9E-4532-ABE8-5F33EF03C585}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D30BE089-4B9E-4532-ABE8-5F33EF03C585}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D30BE089-4B9E-4532-ABE8-5F33EF03C585}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4CDC0BE6-2D76-4B41-BB0C-9FF4FFB720B3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4CDC0BE6-2D76-4B41-BB0C-9FF4FFB720B3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4CDC0BE6-2D76-4B41-BB0C-9FF4FFB720B3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4CDC0BE6-2D76-4B41-BB0C-9FF4FFB720B3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{50B86DD1-470A-4BEE-84E7-3A4985D693F8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{50B86DD1-470A-4BEE-84E7-3A4985D693F8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{50B86DD1-470A-4BEE-84E7-3A4985D693F8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{50B86DD1-470A-4BEE-84E7-3A4985D693F8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {6258FED8-36F5-4240-A281-F0AA77D92AE6}
 	EndGlobalSection
 EndGlobal
