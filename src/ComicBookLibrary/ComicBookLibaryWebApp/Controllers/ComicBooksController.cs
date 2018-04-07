@@ -40,8 +40,6 @@ namespace ComicBookLibaryWebApp.Controllers
         }
 
 
-
-
         public ActionResult Index()
         {
             // TODO Use GetComicBooks Repo version
@@ -89,6 +87,7 @@ namespace ComicBookLibaryWebApp.Controllers
             return View(viewModel);
         }
 
+
         [HttpPost]
         public ActionResult Add(ComicBooksAddViewModel viewModel)
         {
@@ -99,7 +98,8 @@ namespace ComicBookLibaryWebApp.Controllers
                 var comicBook = viewModel.ComicBook;
                 comicBook.AddArtist(viewModel.ArtistId, viewModel.RoleId);
 
-                // TODO Add the comic book.
+                _context.ComicBooks.Add(comicBook);
+                _context.SaveChanges();
 
                 TempData["Message"] = "Your comic book was successfully added!";
 
@@ -117,12 +117,8 @@ namespace ComicBookLibaryWebApp.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-
-            // TODO Get the comic book.
+            
             var comicBook = _context.ComicBooks
-                    .Include(cb => cb.Series)
-                    .Include(cb => cb.Artists.Select(a => a.Artist))
-                    .Include(cb => cb.Artists.Select(a => a.Role))
                     .Where(cb => cb.Id == id)
                     .SingleOrDefault();
 
@@ -149,7 +145,8 @@ namespace ComicBookLibaryWebApp.Controllers
             {
                 var comicBook = viewModel.ComicBook;
 
-                // TODO Update the comic book.
+                _context.Entry(comicBook).State  = EntityState.Modified;
+                _context.SaveChanges();
 
                 TempData["Message"] = "Your comic book was successfully updated!";
 
@@ -170,7 +167,10 @@ namespace ComicBookLibaryWebApp.Controllers
 
             // TODO Get the comic book.
             // Include the "Series" navigation property.
-            var comicBook = new ComicBook();
+            var comicBook = _context.ComicBooks
+                .Where(cb => cb.Id == id)
+                .Include(cb => cb.Series)
+                .SingleOrDefault();
 
             if (comicBook == null)
             {
@@ -183,7 +183,9 @@ namespace ComicBookLibaryWebApp.Controllers
         [HttpPost]
         public ActionResult Delete(int id)
         {
-            // TODO Delete the comic book.
+            var comicBook = new ComicBook() { Id = id }; 
+            _context.Entry(comicBook).State = EntityState.Deleted;
+            _context.SaveChanges();
 
             TempData["Message"] = "Your comic book was successfully deleted!";
 
@@ -197,18 +199,20 @@ namespace ComicBookLibaryWebApp.Controllers
         /// <param name="comicBook">The comic book to validate.</param>
         private void ValidateComicBook(ComicBook comicBook)
         {
-            //// If there aren't any "SeriesId" and "IssueNumber" field validation errors...
-            //if (ModelState.IsValidField("ComicBook.SeriesId") &&
-            //    ModelState.IsValidField("ComicBook.IssueNumber"))
-            //{
-            //    // Then make sure that the provided issue number is unique for the provided series.
-            //    // TODO Call method to check if the issue number is available for this comic book.
-            //    if (false)
-            //    {
-            //        ModelState.AddModelError("ComicBook.IssueNumber",
-            //            "The provided Issue Number has already been entered for the selected Series.");
-            //    }
-            //}
+            // If there aren't any "SeriesId" and "IssueNumber" field validation errors...
+            if (ModelState.IsValidField("ComicBook.SeriesId") &&
+                ModelState.IsValidField("ComicBook.IssueNumber"))
+            {
+                // Then make sure that the provided issue number is unique for the provided series.
+                if (_context.ComicBooks
+                    .Any(cb => cb.Id != comicBook.Id && 
+                                cb.SeriesId == comicBook.SeriesId && 
+                                cb.IssueNumber == comicBook.IssueNumber))
+                {
+                    ModelState.AddModelError("ComicBook.IssueNumber",
+                        "The provided Issue Number has already been entered for the selected Series.");
+                }
+            }
         }
     }
-}
+}   
