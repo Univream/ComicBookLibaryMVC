@@ -7,7 +7,7 @@
         <div class="form-group">
             @Html.LabelFor(m => m.ComicBook.SeriesId, new { @class = "control-label" })
             @Html.DropDownListFor(m => m.ComicBook.SeriesId,
-            Model.SeriesSelectListItems, "", new { @class = "form-control" })
+            Model.SeriesSelectListItems, "Select a Series", new { @class = "form-control" })
         </div>
 
         <div class="form-group">

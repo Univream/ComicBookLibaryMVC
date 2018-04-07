@@ -27,7 +27,7 @@
         {
             <tr>
                 <td>@comicBook.DisplayText</td>
-                <td>@comicBook.PublishedOn.ToString("MM/dd/yyyy")</td>
+                <td>@comicBook.PublishedOn.ToShortDateString()</td>
                 <td>
                     <div class="pull-right">
                         <a href="@Url.Action("Detail", new { id = comicBook.Id })" class="btn btn-primary btn-xs margin-right">

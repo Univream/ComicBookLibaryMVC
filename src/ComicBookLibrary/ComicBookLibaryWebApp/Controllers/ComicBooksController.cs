@@ -1,5 +1,5 @@
 ﻿using ComicBookShared.Models;
-using System;
+using ComicBookShared.Data;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -16,11 +16,40 @@ namespace ComicBookLibaryWebApp.Controllers
     /// </summary>
     public class ComicBooksController : Controller
     {
+        public ComicBooksController()
+        {
+            _context = new Context();
+        }
+
+        private Context _context = null;
+
+        private bool _disposed = false;
+
+        protected override void Dispose(bool disposing)
+        {
+            if (_disposed)
+                return;
+
+            if (disposing)
+                _context.Dispose();
+
+            _disposed = true;
+
+            base.Dispose(disposing);
+
+        }
+
+
+
+
         public ActionResult Index()
         {
-            // TODO Get the comic books list.
-            // Include the "Series" navigation property.
-            var comicBooks = new List<ComicBook>();
+            // TODO Use GetComicBooks Repo version
+            var comicBooks = _context.ComicBooks
+                    .Include(cb => cb.Series)
+                    .OrderBy(cb => cb.Series.Title)
+                    .ThenBy(cb => cb.IssueNumber)
+                    .ToList();
 
             return View(comicBooks);
         }
@@ -32,9 +61,13 @@ namespace ComicBookLibaryWebApp.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
 
-            // TODO Get the comic book.
-            // Include the "Series", "Artists.Artist", and "Artists.Role" navigation properties.
-            var comicBook = new ComicBook();
+            // TODO Use GetComicBook Repo version
+            var comicBook = _context.ComicBooks
+                    .Include(cb => cb.Series)
+                    .Include(cb => cb.Artists.Select(a => a.Artist))
+                    .Include(cb => cb.Artists.Select(a => a.Role))
+                    .Where(cb => cb.Id == id)
+                    .SingleOrDefault();
 
             if (comicBook == null)
             {
@@ -51,8 +84,7 @@ namespace ComicBookLibaryWebApp.Controllers
         {
             var viewModel = new ComicBooksAddViewModel();
 
-            // TODO Pass the Context class to the view model "Init" method.
-            viewModel.Init();
+            viewModel.Init(_context);
 
             return View(viewModel);
         }
@@ -74,8 +106,7 @@ namespace ComicBookLibaryWebApp.Controllers
                 return RedirectToAction("Detail", new { id = comicBook.Id });
             }
 
-            // TODO Pass the Context class to the view model "Init" method.
-            viewModel.Init();
+            viewModel.Init(_context);
 
             return View(viewModel);
         }
@@ -88,7 +119,12 @@ namespace ComicBookLibaryWebApp.Controllers
             }
 
             // TODO Get the comic book.
-            var comicBook = new ComicBook();
+            var comicBook = _context.ComicBooks
+                    .Include(cb => cb.Series)
+                    .Include(cb => cb.Artists.Select(a => a.Artist))
+                    .Include(cb => cb.Artists.Select(a => a.Role))
+                    .Where(cb => cb.Id == id)
+                    .SingleOrDefault();
 
             if (comicBook == null)
             {
@@ -99,7 +135,7 @@ namespace ComicBookLibaryWebApp.Controllers
             {
                 ComicBook = comicBook
             };
-            viewModel.Init();
+            viewModel.Init(_context);
 
             return View(viewModel);
         }
@@ -120,7 +156,7 @@ namespace ComicBookLibaryWebApp.Controllers
                 return RedirectToAction("Detail", new { id = comicBook.Id });
             }
 
-            viewModel.Init();
+            viewModel.Init(_context);
 
             return View(viewModel);
         }
