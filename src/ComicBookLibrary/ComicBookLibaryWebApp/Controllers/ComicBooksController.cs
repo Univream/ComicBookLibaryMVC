@@ -17,6 +17,14 @@ namespace ComicBookLibaryWebApp.Controllers
     public class ComicBooksController : BaseController
     {
 
+        private ComicBooksRepository _comicBooksRepository = null;
+
+        public ComicBooksController()
+        {
+            _comicBooksRepository = new ComicBooksRepository(Context);
+        }
+        
+
         public ActionResult Index()
         {
             var comicBooks = _comicBooksRepository.GetList();

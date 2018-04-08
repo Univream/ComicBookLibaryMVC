@@ -12,19 +12,15 @@ namespace ComicBookLibaryWebApp.Controllers
     /// </summary>
     public class BaseController : Controller
     {
-        private Context Context = null;
+        protected Context Context = null;
         private bool _disposed = false;
 
-        protected ComicBooksRepository _comicBooksRepository { get; private set; }
         protected Repository Repository { get; private set; }
-        protected ComicBookArtistRepository _artistRepository { get; private set; }
-
+ 
         public BaseController()
         {
             Context = new Context();
-            Repository = new Repository(Context);
-            _comicBooksRepository = new ComicBooksRepository(Context);
-            _artistRepository = new ComicBookArtistRepository(Context); 
+            Repository = new Repository(Context); 
         }
 
         protected override void Dispose(bool disposing)

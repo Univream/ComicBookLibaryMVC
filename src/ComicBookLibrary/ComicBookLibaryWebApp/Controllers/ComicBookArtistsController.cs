@@ -16,6 +16,8 @@ namespace ComicBookLibaryWebApp.Controllers
     /// </summary>
     public class ComicBookArtistsController : BaseController
     {
+        private ComicBookArtistRepository _artistRepository = null;
+        private ComicBooksRepository _comicBooksRepository = null; 
 
         public ActionResult Add(int comicBookId)
         {
