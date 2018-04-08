@@ -23,9 +23,12 @@ namespace ComicBookLibaryWebApp.ViewModels
             get { return ComicBook.Id; }
             set { ComicBook.Id = value; }
         }
+
         public ComicBook ComicBook { get; set; } = new ComicBook();
+
         [Display(Name = "Artist")]
         public int ArtistId { get; set; }
+
         [Display(Name = "Role")]
         public int RoleId { get; set; }
 
@@ -35,13 +38,13 @@ namespace ComicBookLibaryWebApp.ViewModels
         /// <summary>
         /// Initializes the view model.
         /// </summary>
-        public void Init()
+        public void Init(Context context)
         {
             ArtistSelectListItems = new SelectList(
-                new List<Artist>(), // TODO Get the artitsts list.
+                context.Artists.OrderBy(a => a.Name).ToList(),
                 "Id", "Name");
             RoleSelectListItems = new SelectList(
-                new List<Role>(), // TODO Get the roles list.
+                context.Roles.OrderBy(a => a.Name).ToList(),
                 "Id", "Name");
         }
     }

@@ -14,36 +14,13 @@ namespace ComicBookLibaryWebApp.Controllers
     /// <summary>
     /// Controller for the "Comic Books" section of the website.
     /// </summary>
-    public class ComicBooksController : Controller
+    public class ComicBooksController : BaseController
     {
-        public ComicBooksController()
-        {
-            _context = new Context();
-        }
-
-        private Context _context = null;
-
-        private bool _disposed = false;
-
-        protected override void Dispose(bool disposing)
-        {
-            if (_disposed)
-                return;
-
-            if (disposing)
-                _context.Dispose();
-
-            _disposed = true;
-
-            base.Dispose(disposing);
-
-        }
-
 
         public ActionResult Index()
         {
             // TODO Use GetComicBooks Repo version
-            var comicBooks = _context.ComicBooks
+            var comicBooks = Context.ComicBooks
                     .Include(cb => cb.Series)
                     .OrderBy(cb => cb.Series.Title)
                     .ThenBy(cb => cb.IssueNumber)
@@ -60,7 +37,7 @@ namespace ComicBookLibaryWebApp.Controllers
             }
 
             // TODO Use GetComicBook Repo version
-            var comicBook = _context.ComicBooks
+            var comicBook = Context.ComicBooks
                     .Include(cb => cb.Series)
                     .Include(cb => cb.Artists.Select(a => a.Artist))
                     .Include(cb => cb.Artists.Select(a => a.Role))
@@ -82,7 +59,7 @@ namespace ComicBookLibaryWebApp.Controllers
         {
             var viewModel = new ComicBooksAddViewModel();
 
-            viewModel.Init(_context);
+            viewModel.Init(Context);
 
             return View(viewModel);
         }
@@ -98,15 +75,15 @@ namespace ComicBookLibaryWebApp.Controllers
                 var comicBook = viewModel.ComicBook;
                 comicBook.AddArtist(viewModel.ArtistId, viewModel.RoleId);
 
-                _context.ComicBooks.Add(comicBook);
-                _context.SaveChanges();
+                Context.ComicBooks.Add(comicBook);
+                Context.SaveChanges();
 
                 TempData["Message"] = "Your comic book was successfully added!";
 
                 return RedirectToAction("Detail", new { id = comicBook.Id });
             }
 
-            viewModel.Init(_context);
+            viewModel.Init(Context);
 
             return View(viewModel);
         }
@@ -118,7 +95,7 @@ namespace ComicBookLibaryWebApp.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             
-            var comicBook = _context.ComicBooks
+            var comicBook = Context.ComicBooks
                     .Where(cb => cb.Id == id)
                     .SingleOrDefault();
 
@@ -131,7 +108,7 @@ namespace ComicBookLibaryWebApp.Controllers
             {
                 ComicBook = comicBook
             };
-            viewModel.Init(_context);
+            viewModel.Init(Context);
 
             return View(viewModel);
         }
@@ -145,15 +122,15 @@ namespace ComicBookLibaryWebApp.Controllers
             {
                 var comicBook = viewModel.ComicBook;
 
-                _context.Entry(comicBook).State  = EntityState.Modified;
-                _context.SaveChanges();
+                Context.Entry(comicBook).State  = EntityState.Modified;
+                Context.SaveChanges();
 
                 TempData["Message"] = "Your comic book was successfully updated!";
 
                 return RedirectToAction("Detail", new { id = comicBook.Id });
             }
 
-            viewModel.Init(_context);
+            viewModel.Init(Context);
 
             return View(viewModel);
         }
@@ -167,7 +144,7 @@ namespace ComicBookLibaryWebApp.Controllers
 
             // TODO Get the comic book.
             // Include the "Series" navigation property.
-            var comicBook = _context.ComicBooks
+            var comicBook = Context.ComicBooks
                 .Where(cb => cb.Id == id)
                 .Include(cb => cb.Series)
                 .SingleOrDefault();
@@ -184,8 +161,8 @@ namespace ComicBookLibaryWebApp.Controllers
         public ActionResult Delete(int id)
         {
             var comicBook = new ComicBook() { Id = id }; 
-            _context.Entry(comicBook).State = EntityState.Deleted;
-            _context.SaveChanges();
+            Context.Entry(comicBook).State = EntityState.Deleted;
+            Context.SaveChanges();
 
             TempData["Message"] = "Your comic book was successfully deleted!";
 
@@ -204,7 +181,7 @@ namespace ComicBookLibaryWebApp.Controllers
                 ModelState.IsValidField("ComicBook.IssueNumber"))
             {
                 // Then make sure that the provided issue number is unique for the provided series.
-                if (_context.ComicBooks
+                if (Context.ComicBooks
                     .Any(cb => cb.Id != comicBook.Id && 
                                 cb.SeriesId == comicBook.SeriesId && 
                                 cb.IssueNumber == comicBook.IssueNumber))

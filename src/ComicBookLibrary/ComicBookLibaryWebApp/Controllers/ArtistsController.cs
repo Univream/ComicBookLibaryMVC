@@ -11,7 +11,7 @@ namespace ComicBookLibaryWebApp.Controllers
     /// <summary>
     /// Controller for the "Artists" section of the website.
     /// </summary>
-    public class ArtistsController : Controller
+    public class ArtistsController : BaseController
     {
         public ActionResult Index()
         {
