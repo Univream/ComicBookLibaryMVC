@@ -52,6 +52,8 @@ namespace ComicBookLibaryWebApp.Controllers
                     RoleId = viewModel.RoleId
                 };
 
+                _artistRepository.Add(comicbookArtist);
+
 
                 TempData["Message"] = "Your artist was successfully added!";
 
@@ -78,7 +80,7 @@ namespace ComicBookLibaryWebApp.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
 
-            ComicBookArtist comicBookArtist = Repository.GetComicBookArtist((int)id);
+            ComicBookArtist comicBookArtist = _artistRepository.Get((int)id);
 
             if (comicBookArtist == null)
             {
@@ -92,7 +94,7 @@ namespace ComicBookLibaryWebApp.Controllers
         public ActionResult Delete(int comicBookId, int id)
         {
 
-            if (Repository.DeleteComicBookArtist(id))
+            if (_artistRepository.Delete(id))
             {
                 return new HttpStatusCodeResult(HttpStatusCode.NotFound);
             }
