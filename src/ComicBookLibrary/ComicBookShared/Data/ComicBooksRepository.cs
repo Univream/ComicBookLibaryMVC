@@ -8,29 +8,28 @@ using System.Data.Entity;
 
 namespace ComicBookShared.Data
 {
-    public class ComicBooksRepository
+    public class ComicBooksRepository : BaseRepository<ComicBook>
     {
-        private Context _context = null;
 
-        public ComicBooksRepository(Context context)
+        public ComicBooksRepository(Context context) 
+            : base(context)
         {
-            _context = context;
         }
 
-        public IList<ComicBook> GetList()
+        public override IList<ComicBook> GetList()
         {
-            return _context.ComicBooks
+            return Context.ComicBooks
                     .Include(cb => cb.Series)
                     .OrderBy(cb => cb.Series.Title)
                     .ThenBy(cb => cb.IssueNumber)
                     .ToList();
         }
 
-        public ComicBook Get(int id, bool includeRelatedEntities = true)
+        public override ComicBook Get(int id, bool includeRelatedEntities = true)
         {
 
-            var comicbooks = _context.ComicBooks.AsQueryable();
-            // TODO Chech first filter speed
+            var comicbooks = Context.ComicBooks.AsQueryable();
+            // TODO Check first filter performance
             // first filter
             comicbooks = comicbooks
                     .Where(cb => cb.Id == id);
@@ -48,28 +47,9 @@ namespace ComicBookShared.Data
         }
 
 
-        public void Add(ComicBook comic)
-        {
-            _context.ComicBooks.Add(comic);
-            _context.SaveChanges();
-        }
-
-        public void Update(ComicBook comic)
-        {
-            _context.Entry(comic).State = EntityState.Modified;
-            _context.SaveChanges();
-        }
-
-        public void Delete(int id)
-        {
-            var comicBook = new ComicBook() { Id = id };
-            _context.ComicBooks.Remove(comicBook);
-            _context.SaveChanges();
-        }
-
         public bool IsUniqueCombo(ComicBook comic)
         {
-            return _context.ComicBooks.Any(cb => cb.Id != comic.Id &&
+            return Context.ComicBooks.Any(cb => cb.Id != comic.Id &&
                                 cb.SeriesId == comic.SeriesId &&
                                 cb.IssueNumber == comic.IssueNumber);
         }
@@ -77,7 +57,7 @@ namespace ComicBookShared.Data
 
         public bool IsUniqueComboArtist(int ComicId, int ArtistId, int RoleId)
         {
-            return _context.ComicBookArtist.Any(cba => cba.ComicBookId == ComicId &&
+            return Context.ComicBookArtist.Any(cba => cba.ComicBookId == ComicId &&
                         cba.ArtistId == ArtistId &&
                         cba.RoleId == RoleId);
         }

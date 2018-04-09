@@ -96,7 +96,7 @@ namespace ComicBookLibaryWebApp.Controllers
         public ActionResult Delete(int comicBookId, int id)
         {
 
-            if (_artistRepository.Delete(id))
+            if (!_artistRepository.Delete(id))
             {
                 return new HttpStatusCodeResult(HttpStatusCode.NotFound);
             }

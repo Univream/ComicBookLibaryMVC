@@ -8,57 +8,37 @@ using System.Data.Entity;
 
 namespace ComicBookShared.Data
 {
-    public class ComicBookArtistRepository
+    public class ComicBookArtistRepository : BaseRepository<ComicBookArtist>
     {
-        private Context _context = null;
+        public ComicBookArtistRepository(Context context) 
+            : base(context)
+        { }
 
-        public ComicBookArtistRepository(Context context)
+        public override IList<ComicBookArtist> GetList()
         {
-            _context = context;
-        }
-
-
-        public ComicBookArtist Get(int id)
-        {
-            return _context.ComicBookArtist
-                .Include(cba => cba.Artist)
-                .Include(cba => cba.Role)
-                .Include(cba => cba.ComicBook.Series)
-                .Where(cba => cba.Id == (int)id)
-                .SingleOrDefault();
-        }
-
-        public IList<ComicBookArtist> GetList()
-        {
-            return _context.ComicBookArtist
+            return Context.ComicBookArtist
                 .Include(cba => cba.Artist)
                 .Include(cba => cba.Role)
                 .Include(cba => cba.ComicBook.Series)
                 .ToList();
         }
+      
 
-        public void Add(ComicBookArtist cba)
+        public override ComicBookArtist Get(int id, bool includeRelatedEntities = true)
         {
-            _context.ComicBookArtist.Add(cba);
-            _context.SaveChanges();
-        }
+            var comicBookArtist = Context.ComicBookArtist.AsQueryable();
 
-        public bool Delete(int id)
-        {
-            var comicBookArtist = _context.ComicBookArtist
-                .Include(cba => cba.Artist)
-                .Include(cba => cba.Role)
-                .Include(cba => cba.ComicBook.Series)
-                .Where(cba => cba.Id == id)
+            if(includeRelatedEntities)
+            {
+                comicBookArtist = comicBookArtist
+                    .Include(cba => cba.Artist)
+                    .Include(cba => cba.Role)
+                    .Include(cba => cba.ComicBook.Series);
+            }
+            
+            return comicBookArtist
+                .Where(cba => cba.Id == (int)id)
                 .SingleOrDefault();
-
-            // wrong id
-            if (comicBookArtist == null)
-                return true;
-
-            _context.ComicBookArtist.Remove(comicBookArtist);
-            _context.SaveChanges();
-            return false;
         }
     }
 }

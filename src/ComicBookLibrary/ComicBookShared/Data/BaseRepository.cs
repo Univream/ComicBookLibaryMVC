@@ -12,13 +12,13 @@ namespace ComicBookShared.Data
     {
         protected Context Context { get; private set; }
 
-        public BaseRepository()
+        public BaseRepository(Context context)
         {
-            Context = new Context();
+            Context = Context;
         }
 
 
-        public abstract TEntity Get(int id);
+        public abstract TEntity Get(int id, bool includeRelatedEntities = false);
         public abstract IList<TEntity> GetList();
 
         public void Add(TEntity entity)
@@ -33,11 +33,17 @@ namespace ComicBookShared.Data
             Context.SaveChanges();
         }
 
-        public void Delete(int id)
+        public bool Delete(int id)
         {
             TEntity entity = Context.Set<TEntity>().Find(id);
+            // no entity was found
+            if (entity == null)
+                return false;
+
             Context.Set<TEntity>().Remove(entity);
             Context.SaveChanges();
+
+            return true;
         }
     }
 }
