@@ -3,6 +3,7 @@ using ComicBookLibraryManager.Helpers;
 using ComicBookShared.Models;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace ComicBookLibraryManager
 {
@@ -18,6 +19,7 @@ namespace ComicBookLibraryManager
         const string CommandDeleteComicBook = "d";
         const string CommandSave = "s";
         const string CommandCancel = "c";
+        const string CommandArtist = "artist"; 
         const string CommandQuit = "q";
 
         // A collection of the comic book editable properties.
@@ -50,6 +52,11 @@ namespace ComicBookLibraryManager
                         AddComicBook();
                         command = CommandListComicBooks;
                         continue;
+                    case CommandArtist:
+                        ConsoleHelper.OutputBlankLine();
+                        GetAllArtist();
+                        ConsoleHelper.OutputBlankLine();
+                        break;
                     default:
                         if (AttemptDisplayComicBook(command, comicBookIds))
                         {
@@ -656,6 +663,15 @@ namespace ComicBookLibraryManager
             ConsoleHelper.OutputLine("3) Description: {0}", comicBook.Description);
             ConsoleHelper.OutputLine("4) Published On: {0}", comicBook.PublishedOn.ToShortDateString());
             ConsoleHelper.OutputLine("5) Average Rating: {0}", comicBook.AverageRating);
+        }
+
+        private static void GetAllArtist()
+        {
+            var artists = Repository.GetArtists().OrderBy(a => a.Id);
+            foreach (var artist in artists)
+            {
+                ConsoleHelper.OutputLine("{0}) {1}", (artist.Id + 1), artist.Name);
+            }
         }
     }
 }

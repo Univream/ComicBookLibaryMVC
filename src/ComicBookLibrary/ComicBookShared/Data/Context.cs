@@ -28,11 +28,6 @@ namespace ComicBookShared.Data
                 .Property(cb => cb.AverageRating)
                 .HasPrecision(5, 2);
 
-            modelBuilder.Entity<ComicBook>()
-                .HasMany(cb => cb.Artists)
-                .WithRequired(a => a.ComicBook)
-                .WillCascadeOnDelete(false);
-
         }
     }
 }
