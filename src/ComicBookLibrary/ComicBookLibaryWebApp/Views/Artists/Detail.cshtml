@@ -23,11 +23,18 @@
         <tbody>
             @foreach (var comicBook in Model.ComicBooks)
             {
-                <tr>
-                    <td>@comicBook.ComicBook.DisplayText</td>
-                    <td>@comicBook.ComicBook.PublishedOn.ToString("MM/dd/yyyy")</td>
-                    <td>@comicBook.Role.Name</td>
-                </tr>
+            <tr>
+                <td>@comicBook.ComicBook.DisplayText</td>
+                <td>@comicBook.ComicBook.PublishedOn.ToString("MM/dd/yyyy")</td>
+                <td>@comicBook.Role.Name</td>
+                <td>
+                    <div class="pull-right">
+                        <a href="@Url.Action("Detail", "ComicBooks", new { id = comicBook.ComicBookId })" class="btn btn-primary btn-xs margin-right">
+                            <span class="glyphicon glyphicon-info-sign"></span><span class="hidden-xs"> Detail</span>
+                        </a>
+                    </div>
+                </td>
+            </tr>
             }
         </tbody>
     </table>

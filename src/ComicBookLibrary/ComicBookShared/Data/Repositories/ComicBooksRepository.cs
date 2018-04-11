@@ -54,7 +54,6 @@ namespace ComicBookShared.Data
                                 cb.IssueNumber == comic.IssueNumber);
         }
 
-
         public bool IsUniqueComboArtist(int ComicId, int ArtistId, int RoleId)
         {
             return Context.ComicBookArtist.Any(cba => cba.ComicBookId == ComicId &&

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ComicBookShared.Models;
+using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
@@ -8,18 +9,27 @@ using System.Threading.Tasks;
 namespace ComicBookShared.Data
 {
     public abstract class BaseRepository<TEntity> 
-        where TEntity : class
+        where TEntity : class, IEntity, new()
     {
         protected Context Context { get; private set; }
 
         public BaseRepository(Context context)
         {
-            Context = Context;
+            Context = context;
         }
 
 
-        public abstract TEntity Get(int id, bool includeRelatedEntities = false);
-        public abstract IList<TEntity> GetList();
+        public abstract TEntity Get(int id, bool includeRelatedEntities = true);
+
+
+        /// <summary>
+        /// Used to Get back all Entities of the corresponding Entity Type
+        /// </summary>
+        /// <returns></returns>
+        public virtual IList<TEntity> GetList()
+        {
+            return Context.Set<TEntity>().ToList();
+        }
 
         public void Add(TEntity entity)
         {
@@ -35,12 +45,11 @@ namespace ComicBookShared.Data
 
         public bool Delete(int id)
         {
-            TEntity entity = Context.Set<TEntity>().Find(id);
-            // no entity was found
-            if (entity == null)
-                return false;
-
-            Context.Set<TEntity>().Remove(entity);
+            IEntity entity = new TEntity()
+            {
+                Id = id
+            };
+            Context.Entry(entity).State = EntityState.Deleted;
             Context.SaveChanges();
 
             return true;

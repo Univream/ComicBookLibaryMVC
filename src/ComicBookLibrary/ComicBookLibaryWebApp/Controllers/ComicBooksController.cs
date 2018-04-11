@@ -16,7 +16,6 @@ namespace ComicBookLibaryWebApp.Controllers
     /// </summary>
     public class ComicBooksController : BaseController
     {
-
         private ComicBooksRepository _comicBooksRepository = null;
 
         public ComicBooksController()
@@ -56,7 +55,7 @@ namespace ComicBookLibaryWebApp.Controllers
         {
             var viewModel = new ComicBooksAddViewModel();
 
-            viewModel.Init(Repository);
+            viewModel.Init(SeriesRepository, ArtistRepository, RoleRepository);
 
             return View(viewModel);
         }
@@ -78,7 +77,7 @@ namespace ComicBookLibaryWebApp.Controllers
                 return RedirectToAction("Detail", new { id = comicBook.Id });
             }
 
-            viewModel.Init(Repository);
+            viewModel.Init(SeriesRepository, ArtistRepository, RoleRepository);
 
             return View(viewModel);
         }
@@ -102,7 +101,7 @@ namespace ComicBookLibaryWebApp.Controllers
                 ComicBook = comicBook
             };
 
-            viewModel.Init(Repository);
+            viewModel.Init(SeriesRepository, ArtistRepository, RoleRepository);
 
             return View(viewModel);
         }
@@ -121,7 +120,7 @@ namespace ComicBookLibaryWebApp.Controllers
                 return RedirectToAction("Detail", new { id = viewModel.ComicBook.Id });
             }
 
-            viewModel.Init(Repository);
+            viewModel.Init(SeriesRepository, ArtistRepository, RoleRepository);
 
             return View(viewModel);
         }
