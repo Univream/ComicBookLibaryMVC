@@ -1,6 +1,6 @@
-﻿using ComicBookLibaryManager.Data;
-using ComicBookLibraryManager.Helpers;
+﻿using ComicBookLibraryManager.Helpers;
 using ComicBookShared.Models;
+using ComicBookShared.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +9,13 @@ namespace ComicBookLibraryManager
 {
     class Program
     {
+        private static Context context { get { return new Context(); } }
+
+        private static ArtistRepository _artistRepository = null;
+        private static SeriesRepository _seriesRepository = null;
+        private static RoleRepository _roleRepository = null;
+        private static ComicBooksRepository _comicBookRepository = null;
+
         // These are the various commands that can be performed 
         // in the app. Each command must have a unique string value.
         const string CommandListComicBooks = "l";
@@ -36,6 +43,7 @@ namespace ComicBookLibraryManager
 
         static void Main(string[] args)
         {
+            _comicBookRepository = new ComicBooksRepository(context);
             string command = CommandListComicBooks;
             IList<int> comicBookIds = null;
 
@@ -73,7 +81,7 @@ namespace ComicBookLibraryManager
                 // List the available commands.
                 ConsoleHelper.OutputBlankLine();
                 ConsoleHelper.Output("Commands: ");
-                int comicBookCount = Repository.GetComicBookCount();
+                int comicBookCount = _comicBookRepository.GetList().Count;
                 if (comicBookCount > 0)
                 {
                     ConsoleHelper.Output("Enter a Number 1-{0}, ", comicBookCount);
@@ -82,6 +90,7 @@ namespace ComicBookLibraryManager
 
                 // Get the next command from the user.
                 command = ConsoleHelper.ReadInput("Enter a Command: ", true);
+                context.Dispose();
             }
         }
 
@@ -130,6 +139,7 @@ namespace ComicBookLibraryManager
         /// </summary>
         private static void AddComicBook()
         {
+            _comicBookRepository = new ComicBooksRepository(context);
             ConsoleHelper.ClearOutput();
             ConsoleHelper.OutputLine("ADD COMIC BOOK");
 
@@ -148,7 +158,8 @@ namespace ComicBookLibraryManager
             comicBook.Artists.Add(comicBookArist);
 
             // Add the comic book to the database.
-            Repository.AddComicBook(comicBook);
+            _comicBookRepository.Add(comicBook);
+            context.Dispose();
         }
 
         /// <summary>
@@ -157,8 +168,9 @@ namespace ComicBookLibraryManager
         /// <returns>Returns an integer for the selected series ID.</returns>
         private static int GetSeriesId()
         {
+            _seriesRepository = new SeriesRepository(context);
             int? seriesId = null;
-            IList<Series> series = Repository.GetSeries();
+            IList<Series> series = _seriesRepository.GetList();
 
             // While the series ID is null, prompt the user to select a series ID 
             // from the provided list.
@@ -193,6 +205,7 @@ namespace ComicBookLibraryManager
                 }
             }
 
+            context.Dispose();
             return seriesId.Value;
         }
 
@@ -202,8 +215,9 @@ namespace ComicBookLibraryManager
         /// <returns>Returns an integer for the selected artist ID.</returns>
         private static int GetArtistId()
         {
+            _artistRepository = new ArtistRepository(context);
             int? artistId = null;
-            IList<Artist> artists = Repository.GetArtists();
+            IList<Artist> artists = _artistRepository.GetList();
 
             // While the artist ID is null, prompt the user to select a artist ID 
             // from the provided list.
@@ -238,6 +252,7 @@ namespace ComicBookLibraryManager
                 }
             }
 
+            context.Dispose();
             return artistId.Value;
         }
 
@@ -247,8 +262,9 @@ namespace ComicBookLibraryManager
         /// <returns>Returns an integer for the selected role ID.</returns>
         private static int GetRoleId()
         {
+            _roleRepository = new RoleRepository(context);
             int? roleId = null;
-            IList<Role> roles = Repository.GetRoles();
+            IList<Role> roles = _roleRepository.GetList();
 
             // While the role ID is null, prompt the user to select a role ID 
             // from the provided list.
@@ -283,6 +299,7 @@ namespace ComicBookLibraryManager
                 }
             }
 
+            context.Dispose();
             return roleId.Value;
         }
 
@@ -416,8 +433,9 @@ namespace ComicBookLibraryManager
         /// by its line number.</returns>
         private static IList<int> ListComicBooks()
         {
+            _comicBookRepository = new ComicBooksRepository(context);
             var comicBookIds = new List<int>();
-            IList<ComicBook> comicBooks = Repository.GetComicBooks();
+            IList<ComicBook> comicBooks = _comicBookRepository.GetList();
 
             ConsoleHelper.ClearOutput();
             ConsoleHelper.OutputLine("COMIC BOOKS");
@@ -433,6 +451,7 @@ namespace ComicBookLibraryManager
                     comicBook.DisplayText);
             }
 
+            context.Dispose();
             return comicBookIds;
         }
 
@@ -491,6 +510,7 @@ namespace ComicBookLibraryManager
         /// <returns>Returns "true" if the comic book was deleted, otherwise "false".</returns>
         private static bool DeleteComicBook(int comicBookId)
         {
+            _comicBookRepository = new ComicBooksRepository(context);
             var successful = false;
 
             // Prompt the user if they want to continue with deleting this comic book.
@@ -500,10 +520,11 @@ namespace ComicBookLibraryManager
             // If the user entered "y", then delete the comic book.
             if (input == "y")
             {
-                Repository.DeleteComicBook(comicBookId);
+                _comicBookRepository.Delete(comicBookId);
                 successful = true;
             }
 
+            context.Dispose();
             return successful;
         }
 
@@ -513,7 +534,8 @@ namespace ComicBookLibraryManager
         /// <param name="comicBookId">The comic book ID to list detail for.</param>
         private static void ListComicBook(int comicBookId)
         {
-            ComicBook comicBook = Repository.GetComicBook(comicBookId);
+            _comicBookRepository = new ComicBooksRepository(context);
+            ComicBook comicBook = _comicBookRepository.Get(comicBookId);
 
             ConsoleHelper.ClearOutput();
             ConsoleHelper.OutputLine("COMIC BOOK DETAIL");
@@ -537,6 +559,7 @@ namespace ComicBookLibraryManager
             {
                 ConsoleHelper.OutputLine("{0} - {1}", artist.Artist.Name, artist.Role.Name);
             }
+            context.Dispose();
         }
 
         /// <summary>
@@ -546,7 +569,8 @@ namespace ComicBookLibraryManager
         /// <param name="comicBookId">The comic book ID to update.</param>
         private static void UpdateComicBook(int comicBookId)
         {
-            ComicBook comicBook = Repository.GetComicBook(comicBookId);
+            _comicBookRepository = new ComicBooksRepository(context);
+            ComicBook comicBook = _comicBookRepository.Get(comicBookId);
 
             string command = CommandListComicBookProperties;
 
@@ -560,7 +584,7 @@ namespace ComicBookLibraryManager
                         ListComicBookProperties(comicBook);
                         break;
                     case CommandSave:
-                        Repository.UpdateComicBook(comicBook);
+                        _comicBookRepository.Update(comicBook);
                         command = CommandCancel;
                         continue;
                     default:
@@ -589,6 +613,7 @@ namespace ComicBookLibraryManager
                 command = ConsoleHelper.ReadInput("Enter a Command: ", true);
             }
 
+            context.Dispose();
             ConsoleHelper.ClearOutput();
         }
 
@@ -603,6 +628,7 @@ namespace ComicBookLibraryManager
         private static bool AttemptUpdateComicBookProperty(
             string command, ComicBook comicBook)
         {
+            _seriesRepository = new SeriesRepository(context);
             var successful = false;
 
             // Attempt to parse the command to a line number.
@@ -621,7 +647,7 @@ namespace ComicBookLibraryManager
                 {
                     case "SeriesId":
                         comicBook.SeriesId = GetSeriesId();
-                        comicBook.Series = Repository.GetSeries(comicBook.SeriesId);
+                        comicBook.Series = _seriesRepository.Get(comicBook.SeriesId);
                         break;
                     case "IssueNumber":
                         comicBook.IssueNumber = GetIssueNumber();
@@ -642,6 +668,8 @@ namespace ComicBookLibraryManager
                 successful = true;
             }
 
+
+            context.Dispose();
             return successful;
         }
 
@@ -667,11 +695,14 @@ namespace ComicBookLibraryManager
 
         private static void GetAllArtist()
         {
-            var artists = Repository.GetArtists().OrderBy(a => a.Id);
+            _artistRepository = new ArtistRepository(context);
+            var artists = _artistRepository.GetList().OrderBy(a => a.Id);
             foreach (var artist in artists)
             {
                 ConsoleHelper.OutputLine("{0}) {1}", (artist.Id + 1), artist.Name);
             }
+
+            context.Dispose();
         }
     }
 }
