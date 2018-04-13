@@ -49,6 +49,7 @@ namespace ComicBookLibraryManager.Helpers
             Console.Write(format, arg);
         }
 
+
         /// <summary>
         /// Writes the provided message to the console as a line.
         /// </summary>

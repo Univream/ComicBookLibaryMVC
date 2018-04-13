@@ -15,6 +15,7 @@ namespace ComicBookLibraryManager
         private static SeriesRepository _seriesRepository = null;
         private static RoleRepository _roleRepository = null;
         private static ComicBooksRepository _comicBookRepository = null;
+        private static ComicBookArtistRepository _comicBookArtistRepository = null;
 
         // These are the various commands that can be performed 
         // in the app. Each command must have a unique string value.
@@ -38,7 +39,8 @@ namespace ComicBookLibraryManager
             "IssueNumber",
             "Description",
             "PublishedOn",
-            "AverageRating"
+            "AverageRating",
+            "Artists"
         };
 
         static void Main(string[] args)
@@ -61,9 +63,7 @@ namespace ComicBookLibraryManager
                         command = CommandListComicBooks;
                         continue;
                     case CommandArtist:
-                        ConsoleHelper.OutputBlankLine();
                         GetAllArtist();
-                        ConsoleHelper.OutputBlankLine();
                         break;
                     default:
                         if (AttemptDisplayComicBook(command, comicBookIds))
@@ -661,6 +661,9 @@ namespace ComicBookLibraryManager
                     case "AverageRating":
                         comicBook.AverageRating = GetAverageRating();
                         break;
+                    case "Artists":
+                        ChooseAddArtist(comicBook);
+                        break;
                     default:
                         break;
                 }
@@ -691,18 +694,77 @@ namespace ComicBookLibraryManager
             ConsoleHelper.OutputLine("3) Description: {0}", comicBook.Description);
             ConsoleHelper.OutputLine("4) Published On: {0}", comicBook.PublishedOn.ToShortDateString());
             ConsoleHelper.OutputLine("5) Average Rating: {0}", comicBook.AverageRating);
+            Console.WriteLine("6) Artists: ");
+            foreach (var comicArtist in comicBook.Artists)
+            {
+                Console.WriteLine("\t" + comicArtist.Artist.Name);
+            }
         }
 
         private static void GetAllArtist()
         {
             _artistRepository = new ArtistRepository(context);
             var artists = _artistRepository.GetList().OrderBy(a => a.Id);
+            ConsoleHelper.ClearOutput();
+            Console.WriteLine("Artists");
+
+            ConsoleHelper.OutputBlankLine();
             foreach (var artist in artists)
             {
                 ConsoleHelper.OutputLine("{0}) {1}", (artist.Id + 1), artist.Name);
             }
 
+            ConsoleHelper.OutputBlankLine();
             context.Dispose();
+        }
+
+        private static void ChooseAddArtist(ComicBook comicBook)
+        {
+            _comicBookArtistRepository = new ComicBookArtistRepository(context);
+            var comicArtists = _comicBookArtistRepository.GetList();
+
+            ConsoleHelper.ClearOutput();
+            ConsoleHelper.OutputBlankLine();
+            Console.WriteLine("Artists");
+            ConsoleHelper.OutputBlankLine();
+
+            // List Artists out of ComicBookArtists
+            foreach (var comicArtist in comicArtists)
+            {
+                ConsoleHelper.OutputLine("{0}) {1} - {2}",
+                    comicArtists.IndexOf(comicArtist) + 1,
+                    comicArtist.Artist.Name, comicArtist.Role.Name);
+            }
+
+            ConsoleHelper.OutputBlankLine();
+            ConsoleHelper.Output("Choose an Artist [1-{0}] to Add, C - Cancel", comicArtists.Count);
+            int result = 0;
+
+
+            // choose Artist
+            while(true)
+            {
+                var attemptChoice = ConsoleHelper.ReadInput("> ").ToLower();
+
+                if (Int32.TryParse(attemptChoice, out result))
+                {
+                    // Add Artist
+                    if (result < comicArtists.Count)
+                    {
+                        var artist = comicArtists[result - 1];
+                        comicBook.AddArtist(artist.Artist, artist.Role);
+                    }
+
+                    break;
+                }
+                else if (attemptChoice == "c")
+                {
+                    // Cancel
+                    break;
+                }
+            }
+
+            context.Dispose();  
         }
     }
 }
