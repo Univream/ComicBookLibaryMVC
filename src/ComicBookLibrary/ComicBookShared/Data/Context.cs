@@ -1,4 +1,5 @@
-﻿using ComicBookShared.Models;
+﻿using ComicBookLibaryWebApp.Migrations;
+using ComicBookShared.Models;
 using System.Data.Entity;
 using System.Data.Entity.ModelConfiguration.Conventions;
 
@@ -15,6 +16,11 @@ namespace ComicBookShared.Data
         public DbSet<Role> Roles { get; set; }
         public DbSet<ComicBookArtist> ComicBookArtist { get; set; }
 
+        public Context()
+        {
+            // Database.SetInitializer(new MigrateDatabaseToLatestVersion<Context, Configuration>());
+            Database.SetInitializer<Context>(null);
+        }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {

@@ -13,7 +13,7 @@ namespace ComicBookLibaryWebApp.Controllers
     /// </summary>
     public class ArtistsController : BaseController
     {
-        public ArtistsController()
+        public ArtistsController() : base ()
         {}
 
         public ActionResult Index()
@@ -54,7 +54,7 @@ namespace ComicBookLibaryWebApp.Controllers
         }
 
         [HttpPost]
-        public ActionResult Add(Artist artist)
+        public ActionResult Add(Artist artist)  
         {
             ValidateArtist(artist);
 

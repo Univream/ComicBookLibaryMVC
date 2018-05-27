@@ -1,4 +1,4 @@
-﻿@model ComicBookShared.Models.ComicBook
+﻿@model ComicBookLibaryWebApp.ViewModels.ComicBookDeleteViewModel
 
 @{
     ViewBag.Title = "Delete Comic Book";
@@ -7,7 +7,7 @@
 <h2>@ViewBag.Title</h2>
 
 <div class="alert alert-warning">
-    Are you sure you want to delete the comic book @Model.DisplayText?
+    Are you sure you want to delete the comic book @Model.ComicBook.DisplayText?
 </div>
 
 @using (Html.BeginForm())
@@ -20,4 +20,6 @@
             <span class="glyphicon glyphicon-remove"></span> Cancel
         </a>
     </div>
+
+    @Html.HiddenFor(m => m.ComicBook.RowVersion)
 }

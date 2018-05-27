@@ -60,5 +60,16 @@ namespace ComicBookShared.Data
                         cba.ArtistId == ArtistId &&
                         cba.RoleId == RoleId);
         }
+
+        public void Delete(int id, byte[] rowVersion)
+        {
+            var comicBook = new ComicBook()
+            {
+                Id = id,
+                RowVersion = rowVersion
+            };
+            Context.Entry(comicBook).State = EntityState.Deleted;
+            Context.SaveChanges();
+        }
     }
 }

@@ -55,6 +55,15 @@
     <Compile Include="Data\DatabaseInitializer.cs" />
     <Compile Include="Data\Repositories\RoleRepository.cs" />
     <Compile Include="Data\Repositories\SeriesRepository.cs" />
+    <Compile Include="Migrations\201804131022426_InitialCreate.cs" />
+    <Compile Include="Migrations\201804131022426_InitialCreate.Designer.cs">
+      <DependentUpon>201804131022426_InitialCreate.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201805271232310_AddRowVersionToComicBook.cs" />
+    <Compile Include="Migrations\201805271232310_AddRowVersionToComicBook.Designer.cs">
+      <DependentUpon>201805271232310_AddRowVersionToComicBook.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Artist.cs" />
     <Compile Include="Models\ComicBook.cs" />
     <Compile Include="Models\ComicBookArtist.cs" />
@@ -66,6 +75,14 @@
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\201804131022426_InitialCreate.resx">
+      <DependentUpon>201804131022426_InitialCreate.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201805271232310_AddRowVersionToComicBook.resx">
+      <DependentUpon>201805271232310_AddRowVersionToComicBook.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
